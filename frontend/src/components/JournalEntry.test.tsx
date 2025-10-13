@@ -23,7 +23,9 @@ describe('JournalEntry', () => {
       <JournalEntry />
     );
 
-    expect(screen.getByLabelText(/title/i) || screen.getByPlaceholderText(/title/i)).toBeTruthy();
+    // Check for title input with placeholder
+    const titleInput = screen.getByPlaceholderText(/Entry Title/i);
+    expect(titleInput).toBeInTheDocument();
   });
 
   test('allows typing in entries', async () => {

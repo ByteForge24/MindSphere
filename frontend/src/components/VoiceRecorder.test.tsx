@@ -1,4 +1,4 @@
-import { describe, test, expect, vi } from 'vitest';
+import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { VoiceRecorder } from './VoiceRecorder';
@@ -22,7 +22,7 @@ describe('VoiceRecorder', () => {
     });
 
     render(
-      <VoiceRecorder onRecordingComplete={() => {}} />
+      <VoiceRecorder onAnalysisComplete={() => {}} />
     );
 
     expect(screen.queryByRole('button')).toBeTruthy();
@@ -34,7 +34,7 @@ describe('VoiceRecorder', () => {
     });
 
     render(
-      <VoiceRecorder onRecordingComplete={() => {}} />
+      <VoiceRecorder onAnalysisComplete={() => {}} />
     );
 
     expect(screen.queryByRole('button')).toBeTruthy();
