@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, request } from '@playwright/test';
 import { ensureAuthenticated } from './auth-helper';
 import { JournalPage } from './pages/JournalPage';
 
@@ -13,11 +13,47 @@ test.describe('Journal', () => {
     const title = `Journal Entry ${Date.now()}`;
     const content = `Playwright journal test - ${Date.now()}`;
 
-    await journalPage.verifyOnJournalPage();
-    await journalPage.submitEntryWithData(title, content);
+    // Get the authentication token BEFORE creating the entry
+    let token = await page.evaluate(() => localStorage.getItem('token'));
+    expect(token).toBeTruthy();
 
-    // Verify the entry appears on the page
-    await journalPage.verifyEntryDisplayed(title, content);
+    await journalPage.verifyOnJournalPage();
+    
+    // Fill and submit the journal entry form WITHOUT reloading
+    await journalPage.fillTitle(title);
+    await journalPage.fillContent(content);
+    await journalPage.clickSave();
+    
+    // Wait for the submission to complete
+    await page.waitForLoadState('networkidle');
+    await page.waitForTimeout(2000);
+
+    // Verify backend persistence via API
+    const apiResponse = await page.request.get('http://localhost:5000/api/journal', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    // Verify API request succeeded
+    expect(apiResponse.status()).toBe(200);
+    
+    const journalEntries = await apiResponse.json();
+    
+    // Parse response - handle both array and object with data property
+    const entries = Array.isArray(journalEntries) ? journalEntries : journalEntries.data || [];
+    
+    // Verify at least one entry exists (entries were created)
+    expect(entries.length).toBeGreaterThan(0);
+    
+    // Verify our specific entry exists in the backend
+    const entryExists = entries.some(
+      (entry: any) => 
+        entry.title === title && 
+        entry.content === content
+    );
+    
+    expect(entryExists).toBeTruthy();
   });
 
   test('user can view multiple journal entries', async ({ page }) => {

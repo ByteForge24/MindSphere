@@ -13,7 +13,7 @@ const { trackEvent } = require('../services/eventService');
 router.get('/', auth, async (req, res) => {
   try {
     console.log('Authenticated user:', req.user);
-    const journals = await Journal.find({ user: req.user._id })
+    const journals = await Journal.find({ user: req.user.id })
       .sort({ createdAt: -1 });
     
     res.json(journals);
