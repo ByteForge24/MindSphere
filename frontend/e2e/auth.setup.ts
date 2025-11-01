@@ -1,8 +1,11 @@
 import { test as setup } from '@playwright/test';
 
 setup('authenticate', async ({ page, context }) => {
-  const testEmail = 'testuser@example.com';
+  // Generate unique test user for parallel execution
+  const testEmail = `testuser_${Date.now()}@example.com`;
   const testPassword = 'password123';
+
+  console.log(`[Setup] Creating test user: ${testEmail}`);
 
   // Log network responses
   page.on('response', response => {

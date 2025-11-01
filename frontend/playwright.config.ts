@@ -2,7 +2,7 @@ import { defineConfig } from '@playwright/test';
 
 export default defineConfig({
   testDir: './e2e',
-  workers: 1, // Run tests serially to ensure authentication persists correctly
+  workers: process.env.CI ? 2 : undefined, // Enable parallel execution with isolated test users
 
   use: {
     baseURL: 'http://localhost:8080',
