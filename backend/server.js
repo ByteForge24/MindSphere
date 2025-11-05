@@ -9,14 +9,29 @@ const path = require('path');
 const multer = require('multer');
 const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
+const Sentry = require('@sentry/node');
 const { initializeChatSocket } = require('./socket/chatSocket');
 const { startAnalyticsJob } = require('./jobs/analyticsJob');
 
 // Load environment variables
 dotenv.config();
 
+// Initialize Sentry for error tracking and performance monitoring
+if (process.env.SENTRY_DSN) {
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    tracesSampleRate: 1.0,
+    environment: process.env.NODE_ENV || 'development',
+  });
+}
+
 // Initialize express app
 const app = express();
+
+// Sentry request handler middleware - must be early in the middleware chain
+if (process.env.SENTRY_DSN) {
+  app.use(Sentry.Handlers.requestHandler());
+}
 
 // --- START: MODIFIED CORS CONFIGURATION ---
 
@@ -121,6 +136,11 @@ mongoose.connect(process.env.MONGO_URI)
   
 // Serve static files from uploads directory
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Sentry error handler middleware - must be after all other middleware and routes
+if (process.env.SENTRY_DSN) {
+  app.use(Sentry.Handlers.errorHandler());
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
