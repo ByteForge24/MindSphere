@@ -36,11 +36,25 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Start backend server
-        run: npm start &
-        working-directory: backend
+        run: |
+          cd backend
+          nohup npm start > server.log 2>&1 &
+          sleep 5
+          cat server.log
 
-      - name: Wait for backend to be ready
-        run: npx wait-on http://localhost:5000 --timeout 30000
+      - name: Check if backend is running
+        run: |
+          for i in {1..12}; do
+            if curl -s http://localhost:5000 > /dev/null; then
+              echo "Backend is ready!"
+              exit 0
+            fi
+            echo "Waiting for backend... ($i/12)"
+            sleep 5
+          done
+          echo "Backend failed to start!"
+          cat backend/server.log
+          exit 1
 
       - name: Run tests
         run: npx playwright test
