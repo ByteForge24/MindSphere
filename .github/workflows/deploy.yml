@@ -33,45 +33,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Install backend dependencies
-        run: cd backend && npm install
-
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
-
-      - name: Wait for MongoDB to be ready
-        run: |
-          for i in {1..30}; do
-            if mongosh --eval "db.adminCommand('ping')" mongodb://localhost:27017 > /dev/null 2>&1; then
-              echo "MongoDB is ready!"
-              exit 0
-            fi
-            echo "Waiting for MongoDB... ($i/30)"
-            sleep 1
-          done
-          echo "MongoDB failed to start!"
-          exit 1
-
       - name: Start backend server
         run: |
           cd backend
-          nohup npm start > server.log 2>&1 &
-          sleep 5
-          cat server.log
+          npm install
+          npm start &
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
-      - name: Check if backend is running
-        run: |
-          for i in {1..12}; do
-            if curl -s http://localhost:5000 > /dev/null; then
-              echo "Backend is ready!"
-              exit 0
-            fi
-            echo "Waiting for backend... ($i/12)"
-            sleep 5
-          done
-          echo "Backend failed to start!"
-          cat backend/server.log
-          exit 1
+      - name: Wait for backend server
+        run: npx wait-on http://localhost:5000 --timeout 60000
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
 
       - name: Run tests
         run: npx playwright test
