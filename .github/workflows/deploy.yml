@@ -38,8 +38,6 @@ jobs:
           cd backend
           npm install
           npm start &
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
       - name: Wait for backend server
         run: npx wait-on http://localhost:5000 --timeout 60000
