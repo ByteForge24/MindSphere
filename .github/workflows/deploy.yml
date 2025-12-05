@@ -192,3 +192,6 @@ jobs:
       - name: Deploy to Netlify Production
         run: |
           curl -X POST ${{ secrets.NETLIFY_PROD_DEPLOY_HOOK }}
+
+      - name: Deploy backend to Render
+        run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
