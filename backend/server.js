@@ -11,6 +11,7 @@ const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const Sentry = require('@sentry/node');
+const logger = require('./utils/logger');
 const { initializeChatSocket } = require('./socket/chatSocket');
 const { startAnalyticsJob } = require('./jobs/analyticsJob');
 
@@ -70,7 +71,7 @@ app.options('*', cors(corsOptions));
 app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev'));
+app.use(morgan('combined', { stream: logger.stream }));
 
 // Rate limiter for AI endpoints
 const aiLimiter = rateLimit({
@@ -120,18 +121,18 @@ if (!fs.existsSync('uploads')) {
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('MongoDB connected');
+    logger.info('MongoDB connected');
     
     // Start analytics background job
     startAnalyticsJob();
-    console.log('Analytics background job started');
+    logger.info('Analytics background job started');
     
     // Optional: Run seed script if specified
     if (process.env.SEED_DATA === 'true') {
       require('./scripts/seedData');
     }
   })
-  .catch(err => console.error('MongoDB connection error:', err));
+  .catch(err => logger.error('MongoDB connection error', { error: err.message }));
 
   
 // Serve static files from uploads directory
@@ -142,12 +143,7 @@ if (process.env.SENTRY_DSN) {
   app.use(Sentry.Handlers.errorHandler());
 }
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
-});
-
+// Centralized error handling middleware
 const errorHandler = require("./middleware/errorHandler");
 app.use(errorHandler);
 
@@ -198,10 +194,10 @@ io.use(async (socket, next) => {
       id: userId
     };
 
-    console.log(`[Socket] User ${socket.user.id} authenticated`);
+    logger.info(`Socket user authenticated`, { userId: socket.user.id });
     next();
   } catch (err) {
-    console.error('[Socket] Authentication error:', err.message);
+    logger.warn('Socket authentication error', { error: err.message });
     next(new Error('Authentication error: invalid token'));
   }
 });
@@ -216,6 +212,6 @@ initializeChatSocket(io);
 // Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`WebSocket server ready for real-time messaging`);
+  logger.info(`Server running on port ${PORT}`);
+  logger.info('WebSocket server ready for real-time messaging');
 });  

@@ -7,6 +7,8 @@ const { trackEventMiddleware } = require('../middleware/eventTracker');
 const Journal = require('../models/Journal');
 const axios = require('axios');
 const { trackEvent } = require('../services/eventService');
+const ApiResponse = require('../utils/apiResponse');
+const logger = require('../utils/logger');
 
 // @route   GET api/journal
 // @desc    Get user's journal entries
@@ -23,10 +25,10 @@ router.get('/', auth, async (req, res) => {
       .skip(skip)
       .limit(limit);
     
-    res.json({ data: journals, page, limit, total });
+    ApiResponse.paginated(res, journals, page, limit, total, 'Journal entries retrieved');
   } catch (err) {
-    console.error('Error fetching journal entries:', err);
-    res.status(500).json({ message: 'Error fetching journal entries' });
+    logger.error('Error fetching journal entries', { error: err.message, userId: req.user.id });
+    ApiResponse.error(res, 'Error fetching journal entries');
   }
 });
 
@@ -39,7 +41,7 @@ router.post('/', auth, [
 ], trackEventMiddleware("journal_created"), async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return ApiResponse.validationError(res, errors.array());
   }
 
   try {
@@ -55,7 +57,7 @@ router.post('/', auth, [
       
       mood = response.data.mood;
     } catch (err) {
-      console.error('Error analyzing journal mood:', err);
+      logger.warn('Error analyzing journal mood', { error: err.message });
     }
     
     // Create new journal entry
@@ -75,10 +77,10 @@ router.post('/', auth, [
       wordCount: content.split(' ').length
     });
     
-    res.json(journal);
+    ApiResponse.created(res, journal, 'Journal entry created');
   } catch (err) {
-    console.error('Error creating journal entry:', err);
-    res.status(500).json({ message: 'Error creating journal entry' });
+    logger.error('Error creating journal entry', { error: err.message, userId: req.user.id });
+    ApiResponse.error(res, 'Error creating journal entry');
   }
 });
 
@@ -109,13 +111,13 @@ router.get('/:id', auth, async (req, res) => {
     });
     
     if (!journal) {
-      return res.status(404).json({ message: 'Journal entry not found' });
+      return ApiResponse.notFound(res, 'Journal entry not found');
     }
     
-    res.json(journal);
+    ApiResponse.success(res, journal, 'Journal entry retrieved');
   } catch (err) {
-    console.error('Error fetching journal entry:', err);
-    res.status(500).json({ message: 'Error fetching journal entry' });
+    logger.error('Error fetching journal entry', { error: err.message, userId: req.user.id });
+    ApiResponse.error(res, 'Error fetching journal entry');
   }
 });
 
@@ -128,7 +130,7 @@ router.put('/:id', auth, [
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
+    return ApiResponse.validationError(res, errors.array());
   }
 
   try {
@@ -141,7 +143,7 @@ router.put('/:id', auth, [
     });
     
     if (!journal) {
-      return res.status(404).json({ message: 'Journal entry not found' });
+      return ApiResponse.notFound(res, 'Journal entry not found');
     }
     
     // Get mood analysis if content has changed
@@ -155,7 +157,7 @@ router.put('/:id', auth, [
         
         mood = response.data.mood;
       } catch (err) {
-        console.error('Error analyzing updated journal mood:', err);
+        logger.warn('Error analyzing updated journal mood', { error: err.message });
       }
     }
     
@@ -174,10 +176,10 @@ router.put('/:id', auth, [
       { new: true }
     );
     
-    res.json(journal);
+    ApiResponse.success(res, journal, 'Journal entry updated');
   } catch (err) {
-    console.error('Error updating journal entry:', err);
-    res.status(500).json({ message: 'Error updating journal entry' });
+    logger.error('Error updating journal entry', { error: err.message, userId: req.user.id });
+    ApiResponse.error(res, 'Error updating journal entry');
   }
 });
 
@@ -193,16 +195,16 @@ router.delete('/:id', auth, async (req, res) => {
     });
     
     if (!journal) {
-      return res.status(404).json({ message: 'Journal entry not found' });
+      return ApiResponse.notFound(res, 'Journal entry not found');
     }
     
     // Delete journal
     await Journal.findByIdAndDelete(req.params.id);
     
-    res.json({ message: 'Journal entry removed' });
+    ApiResponse.success(res, null, 'Journal entry removed');
   } catch (err) {
-    console.error('Error deleting journal entry:', err);
-    res.status(500).json({ message: 'Error deleting journal entry' });
+    logger.error('Error deleting journal entry', { error: err.message, userId: req.user.id });
+    ApiResponse.error(res, 'Error deleting journal entry');
   }
 });
 

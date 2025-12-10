@@ -82,7 +82,7 @@ describe('GET /api/mood/history', () => {
       .get('/api/mood/history')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(2);
+    expect(res.body.data).toHaveLength(2);
   });
 
   it('should reject without auth', async () => {

@@ -41,7 +41,7 @@ const DashboardPage = () => {
     try {
       setLoading(true);
       const response = await api.get('/dashboard/stats');
-      setStats(response.data);
+      setStats(response.data.data || response.data);
     } catch (error) {
       console.error('Error fetching dashboard stats:', error);
     } finally {
@@ -52,7 +52,8 @@ const DashboardPage = () => {
   const fetchAIInsight = async () => {
     try {
       const response = await api.get('/dashboard/ai-insight');
-      setAiInsight(response.data.insight);
+      const payload = response.data.data || response.data;
+      setAiInsight(payload.insight || payload);
     } catch (error) {
       console.error('Failed to load AI insight:', error);
     }

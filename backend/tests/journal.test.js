@@ -41,10 +41,10 @@ describe('POST /api/journal', () => {
       .post('/api/journal')
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'My Day', content: 'Today was good', tags: ['happy'] });
-    expect(res.status).toBe(200);
-    expect(res.body.title).toBe('My Day');
-    expect(res.body.content).toBe('Today was good');
-    expect(res.body.tags).toContain('happy');
+    expect(res.status).toBe(201);
+    expect(res.body.data.title).toBe('My Day');
+    expect(res.body.data.content).toBe('Today was good');
+    expect(res.body.data.tags).toContain('happy');
   });
 
   it('should reject without auth', async () => {
@@ -71,7 +71,7 @@ describe('GET /api/journal', () => {
       .get('/api/journal')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(2);
+    expect(res.body.data).toHaveLength(2);
   });
 
   it('should not return other users journals', async () => {
@@ -94,7 +94,7 @@ describe('GET /api/journal', () => {
       .get('/api/journal')
       .set('Authorization', `Bearer ${token2}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveLength(0);
+    expect(res.body.data).toHaveLength(0);
   });
 });
 
@@ -105,13 +105,13 @@ describe('GET /api/journal/:id', () => {
       .post('/api/journal')
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'My Entry', content: 'Test content' });
-    const journalId = createRes.body._id;
+    const journalId = createRes.body.data._id;
 
     const res = await request(app)
       .get(`/api/journal/${journalId}`)
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.title).toBe('My Entry');
+    expect(res.body.data.title).toBe('My Entry');
   });
 
   it('should return 404 for non-existent journal', async () => {
@@ -131,14 +131,14 @@ describe('PUT /api/journal/:id', () => {
       .post('/api/journal')
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'Original', content: 'Original content' });
-    const journalId = createRes.body._id;
+    const journalId = createRes.body.data._id;
 
     const res = await request(app)
       .put(`/api/journal/${journalId}`)
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'Updated', content: 'Updated content' });
     expect(res.status).toBe(200);
-    expect(res.body.title).toBe('Updated');
+    expect(res.body.data.title).toBe('Updated');
   });
 
   it('should return 404 for non-existent', async () => {
@@ -159,7 +159,7 @@ describe('DELETE /api/journal/:id', () => {
       .post('/api/journal')
       .set('Authorization', `Bearer ${token}`)
       .send({ title: 'To Delete', content: 'Will be deleted' });
-    const journalId = createRes.body._id;
+    const journalId = createRes.body.data._id;
 
     const res = await request(app)
       .delete(`/api/journal/${journalId}`)

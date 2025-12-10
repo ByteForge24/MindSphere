@@ -117,10 +117,10 @@ describe('GET /api/dashboard/stats', () => {
       .get('/api/dashboard/stats')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body).toHaveProperty('streakCount');
-    expect(res.body).toHaveProperty('totalCheckIns');
-    expect(res.body).toHaveProperty('completedJournals');
-    expect(res.body).toHaveProperty('tokenBalance');
+    expect(res.body.data).toHaveProperty('streakCount');
+    expect(res.body.data).toHaveProperty('totalCheckIns');
+    expect(res.body.data).toHaveProperty('completedJournals');
+    expect(res.body.data).toHaveProperty('tokenBalance');
   });
 
   it('should reflect correct counts after activity', async () => {
@@ -142,9 +142,9 @@ describe('GET /api/dashboard/stats', () => {
       .get('/api/dashboard/stats')
       .set('Authorization', `Bearer ${token}`);
     expect(res.status).toBe(200);
-    expect(res.body.totalCheckIns).toBe(1);
-    expect(res.body.completedJournals).toBe(1);
-    expect(res.body.streakCount).toBe(1);
+    expect(res.body.data.totalCheckIns).toBe(1);
+    expect(res.body.data.completedJournals).toBe(1);
+    expect(res.body.data.streakCount).toBe(1);
   });
 
   it('should reject without auth', async () => {

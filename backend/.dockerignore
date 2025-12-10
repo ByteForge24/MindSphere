@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log*
+.env
+logs/
+uploads/audio/*
+!uploads/audio/.gitkeep
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+README.md
+tests/

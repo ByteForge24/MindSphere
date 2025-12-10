@@ -7,6 +7,8 @@ const Journal = require('../models/Journal');
 const User = require('../models/User');
 const Token = require('../models/Token');
 const { getSuggestions } = require('../services/geminiService');
+const ApiResponse = require('../utils/apiResponse');
+const logger = require('../utils/logger');
 
 // @route   GET api/dashboard/stats
 // @desc    Get dashboard statistics
@@ -39,10 +41,10 @@ router.get('/stats', auth, async (req, res) => {
       tokenBalance
     };
     
-    res.json(stats);
+    ApiResponse.success(res, stats, 'Dashboard stats retrieved');
   } catch (err) {
-    console.error('Error fetching dashboard stats:', err);
-    res.status(500).json({ message: 'Error fetching dashboard stats' });
+    logger.error('Error fetching dashboard stats', { error: err.message, userId: req.user.id });
+    ApiResponse.error(res, 'Error fetching dashboard stats');
   }
 });
 
@@ -70,16 +72,10 @@ router.get('/ai-insight', auth, async (req, res) => {
     // Get AI-generated insight
     const aiInsight = await getSuggestions(moodSummary);
     
-    res.json({
-      success: true,
-      insight: aiInsight
-    });
+    ApiResponse.success(res, { insight: aiInsight }, 'AI insight generated');
   } catch (err) {
-    console.error('Failed to generate AI insight:', err);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to generate AI insight'
-    });
+    logger.error('Failed to generate AI insight', { error: err.message, userId: req.user.id });
+    ApiResponse.error(res, 'Failed to generate AI insight');
   }
 });
 
