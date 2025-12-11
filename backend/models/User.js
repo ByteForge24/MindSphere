@@ -14,7 +14,18 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: function () {
+      return this.provider === 'local';
+    }
+  },
+  provider: {
+    type: String,
+    enum: ['local', 'google', 'github'],
+    default: 'local'
+  },
+  providerId: {
+    type: String,
+    default: null
   },
   role: {
     type: String,
@@ -72,7 +83,7 @@ const UserSchema = new mongoose.Schema({
 
 // Hash password before saving
 UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) {
+  if (!this.isModified('password') || !this.password) {
     return next();
   }
   

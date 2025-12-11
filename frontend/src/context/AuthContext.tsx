@@ -19,6 +19,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string, role: string) => Promise<void>;
+  handleOAuthLogin: (token: string, userData: User & { provider?: string }) => void;
   logout: () => void;
 }
 
@@ -169,6 +170,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const handleOAuthLogin = (authToken: string, userData: User & { provider?: string }) => {
+    localStorage.setItem("token", authToken);
+    setToken(authToken);
+    setUser(userData);
+
+    try {
+      connectSocket(authToken);
+    } catch (socketError) {
+      console.error("Socket connection error:", socketError);
+    }
+
+    toast({
+      title: "Welcome!",
+      description: `Signed in as ${userData.name}`,
+    });
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
@@ -196,6 +214,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         login,
         register,
+        handleOAuthLogin,
         logout,
       }}
     >

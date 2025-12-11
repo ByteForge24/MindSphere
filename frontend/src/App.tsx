@@ -15,6 +15,7 @@ import HistoryPage from "./pages/HistoryPage";
 import CommunityPage from "./pages/CommunityPage";
 import ProfilePage from "./pages/ProfilePage";
 import GamesPage from "./pages/GamesPage";
+import OAuthCallbackPage from "./pages/OAuthCallbackPage";
 import NotFound from "./pages/NotFound";
 import { Import } from "lucide-react";
 import Index from "./pages/Index";
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/oauth/callback" element={<OAuthCallbackPage />} />
             <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
             <Route path="/check-in" element={<ProtectedRoute><CheckInPage /></ProtectedRoute>} />
             <Route path="/journal" element={<ProtectedRoute><JournalPage /></ProtectedRoute>} />

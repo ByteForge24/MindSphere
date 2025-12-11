@@ -11,7 +11,9 @@ const rateLimit = require('express-rate-limit');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const Sentry = require('@sentry/node');
+const passport = require('passport');
 const logger = require('./utils/logger');
+const { configurePassport } = require('./config/passport');
 const { initializeChatSocket } = require('./socket/chatSocket');
 const { startAnalyticsJob } = require('./jobs/analyticsJob');
 
@@ -72,6 +74,10 @@ app.use(helmet());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined', { stream: logger.stream }));
+
+// Passport OAuth initialization
+app.use(passport.initialize());
+configurePassport();
 
 // Rate limiter for AI endpoints
 const aiLimiter = rateLimit({

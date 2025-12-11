@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
 const { trackEvent } = require('../services/eventService');
@@ -151,6 +152,72 @@ router.post(
       res.status(500).json({ message: 'Server error', error: err.message });
     }
   }
+);
+
+// ---- OAuth Helper: Issue JWT and redirect to frontend ----
+function oauthCallback(req, res) {
+  const user = req.user;
+  const payload = { user: { id: user.id } };
+
+  jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' }, (err, token) => {
+    if (err) {
+      return res.redirect(
+        `${process.env.FRONTEND_URL || 'http://localhost:8080'}/login?error=token_failed`
+      );
+    }
+
+    trackEvent(user._id.toString(), 'user_oauth_login', { provider: user.provider });
+
+    // Redirect to frontend with token and user info
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
+    const params = new URLSearchParams({
+      token,
+      userId: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      provider: user.provider,
+    });
+    res.redirect(`${frontendUrl}/oauth/callback?${params.toString()}`);
+  });
+}
+
+// ---- Google OAuth ----
+
+// @route   GET api/auth/google
+// @desc    Initiate Google OAuth login
+// @access  Public
+router.get(
+  '/google',
+  passport.authenticate('google', { scope: ['profile', 'email'], session: false })
+);
+
+// @route   GET api/auth/google/callback
+// @desc    Google OAuth callback
+// @access  Public
+router.get(
+  '/google/callback',
+  passport.authenticate('google', { session: false, failureRedirect: '/login?error=google_failed' }),
+  oauthCallback
+);
+
+// ---- GitHub OAuth ----
+
+// @route   GET api/auth/github
+// @desc    Initiate GitHub OAuth login
+// @access  Public
+router.get(
+  '/github',
+  passport.authenticate('github', { scope: ['user:email'], session: false })
+);
+
+// @route   GET api/auth/github/callback
+// @desc    GitHub OAuth callback
+// @access  Public
+router.get(
+  '/github/callback',
+  passport.authenticate('github', { session: false, failureRedirect: '/login?error=github_failed' }),
+  oauthCallback
 );
 
 module.exports = router;
