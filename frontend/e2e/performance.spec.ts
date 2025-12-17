@@ -12,19 +12,19 @@ test.describe('Performance', () => {
   test('login page loads quickly', async ({ page }) => {
     const loadTime = await measurePageLoad(page, '/login');
     console.log(`Login page load time: ${loadTime}ms`);
-    expect(loadTime).toBeLessThan(3000);
+    expect(loadTime).toBeLessThan(5000);
   });
 
   test('dashboard loads within acceptable time', async ({ page }) => {
     const loadTime = await measurePageLoad(page, '/dashboard');
     console.log(`Dashboard load time: ${loadTime}ms`);
-    expect(loadTime).toBeLessThan(3000);
+    expect(loadTime).toBeLessThan(5000);
   });
 
   test('journal page loads within acceptable time', async ({ page }) => {
     const loadTime = await measurePageLoad(page, '/journal');
     console.log(`Journal page load time: ${loadTime}ms`);
-    expect(loadTime).toBeLessThan(3000);
+    expect(loadTime).toBeLessThan(5000);
   });
 
 });

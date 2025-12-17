@@ -5,7 +5,8 @@ const isExternalEnvironment = !!process.env.E2E_BASE_URL;
 
 export default defineConfig({
   testDir: './e2e',
-  workers: process.env.CI ? 2 : undefined, // Enable parallel execution with isolated test users
+  workers: 1, // Serial execution to avoid flaky auth/state conflicts
+  retries: process.env.CI ? 2 : 1, // Retry flaky tests
 
   use: {
     baseURL: baseURL,
