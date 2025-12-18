@@ -32,6 +32,9 @@ if (process.env.SENTRY_DSN) {
 // Initialize express app
 const app = express();
 
+// Trust first proxy (Render, Heroku, etc.) so req.protocol reflects HTTPS
+app.set('trust proxy', 1);
+
 // Sentry request handler middleware - must be early in the middleware chain
 if (process.env.SENTRY_DSN) {
   app.use(Sentry.Handlers.requestHandler());
