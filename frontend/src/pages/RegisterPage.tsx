@@ -30,6 +30,7 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [role, setRole] = useState("student");
+  const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
   const { toast } = useToast();
@@ -293,15 +294,25 @@ const RegisterPage = () => {
                   <Label className="text-sm font-semibold text-gray-700">I am a</Label>
                   <RadioGroup 
                     value={role}
-                    onValueChange={setRole}
+                    onValueChange={(value) => {
+                      setRole(value);
+                      setSelectedRole(value);
+                    }}
                     className="grid grid-cols-3 gap-4"
                   >
                     <div className="relative">
                       <RadioGroupItem value="student" id="student" className="peer sr-only" />
                       <Label 
-                        htmlFor="student" 
-                        className="flex flex-col items-center gap-2 p-4 bg-gray-50 border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-primary/5 hover:border-primary/30 peer-checked:bg-primary/10 peer-checked:border-primary peer-checked:text-primary transition-all duration-300"
+                        htmlFor="student"
+                        data-testid="role-student"
+                        onClick={() => { setRole('student'); setSelectedRole('student'); }}
+                        className={`flex flex-col items-center gap-2 p-4 rounded-xl cursor-pointer transition-all duration-300 relative ${
+                          selectedRole === 'student'
+                            ? 'selected border-2 border-green-500 bg-green-50 ring-2 ring-green-200 text-green-700'
+                            : 'border-2 border-gray-200 bg-gray-50 hover:bg-primary/5 hover:border-primary/30'
+                        }`}
                       >
+                        {selectedRole === 'student' && <CheckCircle className="w-4 h-4 absolute top-2 right-2 text-green-500" />}
                         <Users className="w-6 h-6" />
                         <span className="text-sm font-medium">Student</span>
                       </Label>
@@ -309,9 +320,16 @@ const RegisterPage = () => {
                     <div className="relative">
                       <RadioGroupItem value="professional" id="professional" className="peer sr-only" />
                       <Label 
-                        htmlFor="professional" 
-                        className="flex flex-col items-center gap-2 p-4 bg-gray-50 border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-secondary/5 hover:border-secondary/30 peer-checked:bg-secondary/10 peer-checked:border-secondary peer-checked:text-secondary transition-all duration-300"
+                        htmlFor="professional"
+                        data-testid="role-professional"
+                        onClick={() => { setRole('professional'); setSelectedRole('professional'); }}
+                        className={`flex flex-col items-center gap-2 p-4 rounded-xl cursor-pointer transition-all duration-300 relative ${
+                          selectedRole === 'professional'
+                            ? 'selected border-2 border-blue-500 bg-blue-50 ring-2 ring-blue-200 text-blue-700'
+                            : 'border-2 border-gray-200 bg-gray-50 hover:bg-secondary/5 hover:border-secondary/30'
+                        }`}
                       >
+                        {selectedRole === 'professional' && <CheckCircle className="w-4 h-4 absolute top-2 right-2 text-blue-500" />}
                         <Briefcase className="w-6 h-6" />
                         <span className="text-sm font-medium">Professional</span>
                       </Label>
@@ -319,9 +337,16 @@ const RegisterPage = () => {
                     <div className="relative">
                       <RadioGroupItem value="other" id="other" className="peer sr-only" />
                       <Label 
-                        htmlFor="other" 
-                        className="flex flex-col items-center gap-2 p-4 bg-gray-50 border-2 border-gray-200 rounded-xl cursor-pointer hover:bg-accent/5 hover:border-accent/30 peer-checked:bg-accent/10 peer-checked:border-accent peer-checked:text-accent transition-all duration-300"
+                        htmlFor="other"
+                        data-testid="role-other"
+                        onClick={() => { setRole('other'); setSelectedRole('other'); }}
+                        className={`flex flex-col items-center gap-2 p-4 rounded-xl cursor-pointer transition-all duration-300 relative ${
+                          selectedRole === 'other'
+                            ? 'selected border-2 border-orange-500 bg-orange-50 ring-2 ring-orange-200 text-orange-700'
+                            : 'border-2 border-gray-200 bg-gray-50 hover:bg-accent/5 hover:border-accent/30'
+                        }`}
                       >
+                        {selectedRole === 'other' && <CheckCircle className="w-4 h-4 absolute top-2 right-2 text-orange-500" />}
                         <MoreHorizontal className="w-6 h-6" />
                         <span className="text-sm font-medium">Other</span>
                       </Label>

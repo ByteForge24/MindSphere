@@ -5,7 +5,7 @@ const PROD_URL = 'https://mindsphere-hub.vercel.app';
 export default defineConfig({
   testDir: '.',
   timeout: 60_000,
-  retries: 1,
+  retries: process.env.CI ? 2 : 1,
   workers: 1, // serial — tests share auth state via storageState
 
   use: {

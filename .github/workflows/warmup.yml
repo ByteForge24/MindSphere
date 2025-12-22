@@ -1,0 +1,15 @@
+name: Backend Warmup
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  warmup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping backend health endpoint
+        run: |
+          echo "Pinging backend at $(date -u)"
+          curl -sf --max-time 30 https://mindsphere-backend-9c0u.onrender.com/health || echo "Warmup ping failed"
