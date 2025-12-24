@@ -613,9 +613,35 @@ See [SECURITY.md](SECURITY.md) for the full security policy and incident respons
 
 ## Screenshots
 
-<img width="1920" height="1080" alt="MindSphere Dashboard" src="https://github.com/user-attachments/assets/52ce7831-0134-4ecb-9f84-60ac51ce0554" />
-<img width="1920" height="1080" alt="MindSphere Mood Tracking" src="https://github.com/user-attachments/assets/7ccef797-3dfe-40dd-993d-6d1e81391494" />
-<img width="1920" height="1080" alt="MindSphere Community" src="https://github.com/user-attachments/assets/b498ae25-12a3-4a08-ae62-4bc6b3b35182" />
+### Landing Page
+![Landing Page](docs/screenshots/01-landing.png)
+
+### Login Page
+![Login Page](docs/screenshots/02-login.png)
+
+### Register Page
+![Register Page](docs/screenshots/03-register.png)
+
+### Dashboard
+![Dashboard](docs/screenshots/04-dashboard.png)
+
+### Mood Check-In
+![Mood Check-In](docs/screenshots/05-checkin.png)
+
+### Journal
+![Journal](docs/screenshots/06-journal.png)
+
+### Mood History & Analytics
+![Mood History](docs/screenshots/07-history.png)
+
+### Community Chat
+![Community](docs/screenshots/08-community.png)
+
+### Wellness Games
+![Games](docs/screenshots/09-games.png)
+
+### Profile Settings
+![Profile](docs/screenshots/10-profile.png)
 
 ---
 
