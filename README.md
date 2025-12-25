@@ -18,6 +18,7 @@
 
 - [Overview](#overview)
 - [Live Demo](#live-demo)
+- [Screenshots](#screenshots)
 - [Architecture](#architecture)
 - [Features](#features)
 - [Tech Stack](#tech-stack)
@@ -29,7 +30,6 @@
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Infrastructure & DevOps](#infrastructure--devops)
 - [Security](#security)
-- [Screenshots](#screenshots)
 - [Future Roadmap](#future-roadmap)
 
 ---
@@ -56,6 +56,40 @@ MindSphere is a **production-grade mental wellness platform** that combines mood
 | **Backend API** | [https://mindsphere-backend-9c0u.onrender.com](https://mindsphere-backend-9c0u.onrender.com/health) |
 
 > The backend runs on Render's free tier. A GitHub Actions cron job pings it every 5 minutes to prevent cold starts.
+
+---
+
+## Screenshots
+
+### Landing Page
+![Landing Page](docs/screenshots/01-landing.png)
+
+### Login Page
+![Login Page](docs/screenshots/02-login.png)
+
+### Register Page
+![Register Page](docs/screenshots/03-register.png)
+
+### Dashboard
+![Dashboard](docs/screenshots/04-dashboard.png)
+
+### Mood Check-In
+![Mood Check-In](docs/screenshots/05-checkin.png)
+
+### Journal
+![Journal](docs/screenshots/06-journal.png)
+
+### Mood History & Analytics
+![Mood History](docs/screenshots/07-history.png)
+
+### Community Chat
+![Community](docs/screenshots/08-community.png)
+
+### Wellness Games
+![Games](docs/screenshots/09-games.png)
+
+### Profile Settings
+![Profile](docs/screenshots/10-profile.png)
 
 ---
 
@@ -608,40 +642,6 @@ The backend allows these origins:
 - **Docker Security** — Non-root user (`appuser`) in backend container, multi-stage frontend build
 
 See [SECURITY.md](SECURITY.md) for the full security policy and incident response procedures.
-
----
-
-## Screenshots
-
-### Landing Page
-![Landing Page](docs/screenshots/01-landing.png)
-
-### Login Page
-![Login Page](docs/screenshots/02-login.png)
-
-### Register Page
-![Register Page](docs/screenshots/03-register.png)
-
-### Dashboard
-![Dashboard](docs/screenshots/04-dashboard.png)
-
-### Mood Check-In
-![Mood Check-In](docs/screenshots/05-checkin.png)
-
-### Journal
-![Journal](docs/screenshots/06-journal.png)
-
-### Mood History & Analytics
-![Mood History](docs/screenshots/07-history.png)
-
-### Community Chat
-![Community](docs/screenshots/08-community.png)
-
-### Wellness Games
-![Games](docs/screenshots/09-games.png)
-
-### Profile Settings
-![Profile](docs/screenshots/10-profile.png)
 
 ---
 
