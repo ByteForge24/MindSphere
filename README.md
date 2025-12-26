@@ -64,9 +64,6 @@ MindSphere is a **production-grade mental wellness platform** that combines mood
 ### Landing Page
 ![Landing Page](docs/screenshots/01-landing.png)
 
-### Login Page
-![Login Page](docs/screenshots/02-login.png)
-
 ### Register Page
 ![Register Page](docs/screenshots/03-register.png)
 
@@ -76,20 +73,11 @@ MindSphere is a **production-grade mental wellness platform** that combines mood
 ### Mood Check-In
 ![Mood Check-In](docs/screenshots/05-checkin.png)
 
-### Journal
-![Journal](docs/screenshots/06-journal.png)
-
-### Mood History & Analytics
-![Mood History](docs/screenshots/07-history.png)
-
 ### Community Chat
 ![Community](docs/screenshots/08-community.png)
 
 ### Wellness Games
 ![Games](docs/screenshots/09-games.png)
-
-### Profile Settings
-![Profile](docs/screenshots/10-profile.png)
 
 ---
 
