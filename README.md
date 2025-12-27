@@ -67,9 +67,6 @@ MindSphere is a **production-grade mental wellness platform** that combines mood
 ### Register Page
 ![Register Page](docs/screenshots/03-register.png)
 
-### Dashboard
-![Dashboard](docs/screenshots/04-dashboard.png)
-
 ### Mood Check-In
 ![Mood Check-In](docs/screenshots/05-checkin.png)
 
