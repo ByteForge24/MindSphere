@@ -101,5 +101,17 @@
   "description": "A comprehensive mental health platform that helps users track their emotional well-being through voice analysis, personalized recommendations, and community support.",
   "main": "eslint.config.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "bundlewatch": {
+    "files": [
+      {
+        "path": "dist/assets/*.js",
+        "maxSize": "500kB"
+      },
+      {
+        "path": "dist/assets/*.css",
+        "maxSize": "50kB"
+      }
+    ]
+  }
 }
