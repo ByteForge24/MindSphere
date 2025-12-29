@@ -18,9 +18,12 @@
 
 - [Overview](#overview)
 - [Live Demo](#live-demo)
+- [Demo](#demo)
 - [Screenshots](#screenshots)
-- [Architecture](#architecture)
+- [Feature Highlights](#feature-highlights)
 - [Features](#features)
+- [System Architecture Overview](#system-architecture-overview)
+- [Architecture](#architecture)
 - [Tech Stack](#tech-stack)
 - [Getting Started](#getting-started)
 - [Docker Deployment](#docker-deployment)
@@ -31,6 +34,8 @@
 - [Infrastructure & DevOps](#infrastructure--devops)
 - [Security](#security)
 - [Future Roadmap](#future-roadmap)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -59,6 +64,14 @@ MindSphere is a **production-grade mental wellness platform** that combines mood
 
 ---
 
+## Demo
+
+![MindSphere Demo](docs/demo/mindsphere-demo.gif)
+
+> This demo shows the main user flow: signup → dashboard → daily check-in → AI insights → journaling → community chat.
+
+---
+
 ## Screenshots
 
 ### Landing Page
@@ -78,40 +91,50 @@ MindSphere is a **production-grade mental wellness platform** that combines mood
 
 ---
 
+## System Architecture Overview
+
+MindSphere follows a modern full-stack architecture:
+
+> **User Browser** → **React Frontend** (Vercel) → **Node.js/Express API** (Render) → **MongoDB Atlas**
+
+External integrations include **Google Gemini** for AI insights and **OAuth providers** (Google and GitHub) for authentication. Real-time community chat is powered by **Socket.IO** with JWT-authenticated WebSocket connections.
+
+---
+
 ## Architecture
 
+```mermaid
+flowchart TD
+    User["🧑 User Browser"]
+    Frontend["⚛️ Vercel Frontend\nReact 18 / TypeScript / Vite"]
+    Backend["🖥️ Render Backend\nNode.js / Express / Socket.IO"]
+    DB[("🗄️ MongoDB Atlas")]
+    AI["🤖 Google Gemini AI"]
+    OAuth["🔐 Google & GitHub OAuth"]
+    Sentry["📊 Sentry Error Tracking"]
+    Actions["⚙️ GitHub Actions CI/CD"]
+
+    User --> Frontend
+    Frontend --> Backend
+    Frontend --> OAuth
+    Backend --> DB
+    Backend --> AI
+    Backend --> OAuth
+    Backend --> Sentry
+    Frontend --> Sentry
+    Actions --> Backend
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                          CLIENT                                 │
-│  React 18 · TypeScript · Vite · TanStack Query · Tailwind      │
-│  Radix UI (50+ components) · Recharts · Socket.IO Client        │
-│  Deployed on Vercel (with SPA rewrites via vercel.json)         │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │ REST API + WebSocket + OAuth
-┌──────────────────────────────┼──────────────────────────────────┐
-│                          BACKEND                                │
-│  Express.js · Passport.js (Google + GitHub OAuth)               │
-│  JWT Auth · RBAC · Helmet · Rate Limiting · Winston Logger      │
-│  Multer (file uploads) · Sentry Error Tracking                  │
-│  Deployed on Render (with auto-warmup cron)                     │
-│  ┌───────────┐  ┌───────────┐  ┌───────────┐  ┌────────────┐  │
-│  │ REST API  │  │ Socket.IO │  │ OAuth 2.0 │  │ Cron Jobs  │  │
-│  └─────┬─────┘  └─────┬─────┘  └─────┬─────┘  └─────┬──────┘  │
-└────────┼───────────────┼──────────────┼──────────────┼──────────┘
-         │               │              │              │
-┌────────┼───────────────┼──────────────┼──────────────┼──────────┐
-│        ▼               ▼              ▼              ▼          │
-│                    MongoDB Atlas                                │
-│  Users · CheckIns · Journals · Communities · Groups             │
-│  Tokens · Rewards · Recommendations                             │
-└─────────────────────────────────────────────────────────────────┘
-         │
-┌────────┼────────────────────────────────────────────────────────┐
-│        ▼          EXTERNAL SERVICES                             │
-│  Google Gemini API · Google OAuth · GitHub OAuth                │
-│  Sentry Error Tracking · GitHub Actions CI/CD                   │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+---
+
+## Feature Highlights
+
+- 🤖 **AI-powered mood insights** using Google Gemini
+- 🎯 **Daily emotional check-ins** with streak tracking
+- 📔 **Secure journaling** with AI-assisted reflections
+- 💬 **Real-time community support chat** (Socket.IO)
+- 🎮 **Mindfulness exercises** and breathing games
+- 🔐 **OAuth login** (Google & GitHub)
 
 ---
 
@@ -350,6 +373,107 @@ Services:
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/health` | Returns `OK` (used by Render + warmup cron) |
+
+### Request / Response Examples
+
+<details>
+<summary><strong>POST /api/auth/register</strong></summary>
+
+**Request:**
+```json
+{
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "password": "securePassword123",
+  "role": "student"
+}
+```
+
+**Response:**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "user": {
+    "id": "665f1a2b3c4d5e6f7a8b9c0d",
+    "name": "Jane Doe",
+    "email": "jane@example.com",
+    "role": "student",
+    "createdAt": "2026-03-10T12:00:00.000Z"
+  }
+}
+```
+</details>
+
+<details>
+<summary><strong>POST /api/mood/check-in</strong></summary>
+
+**Headers:** `Authorization: Bearer <JWT_TOKEN>`
+
+**Request:**
+```json
+{
+  "moodScore": 7,
+  "energyLevel": 6,
+  "method": "text",
+  "text": "Feeling good today after a morning walk."
+}
+```
+
+**Response:**
+```json
+{
+  "checkIn": {
+    "_id": "665f1b3c4d5e6f7a8b9c0e1f",
+    "user": "665f1a2b3c4d5e6f7a8b9c0d",
+    "moodScore": 7,
+    "energyLevel": 6,
+    "method": "text",
+    "text": "Feeling good today after a morning walk.",
+    "createdAt": "2026-03-10T12:05:00.000Z"
+  },
+  "streak": {
+    "count": 5,
+    "lastCheckIn": "2026-03-10T12:05:00.000Z",
+    "plantLevel": "leaf"
+  }
+}
+```
+</details>
+
+<details>
+<summary><strong>POST /api/journal</strong></summary>
+
+**Headers:** `Authorization: Bearer <JWT_TOKEN>`
+
+**Request:**
+```json
+{
+  "title": "Morning Reflection",
+  "content": "Today I practiced gratitude and felt more centered.",
+  "tags": ["gratitude", "morning"],
+  "isPrivate": true
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": {
+    "_id": "665f1c4d5e6f7a8b9c0d1e2f",
+    "user": "665f1a2b3c4d5e6f7a8b9c0d",
+    "title": "Morning Reflection",
+    "content": "Today I practiced gratitude and felt more centered.",
+    "mood": "positive",
+    "tags": ["gratitude", "morning"],
+    "isPrivate": true,
+    "createdAt": "2026-03-10T12:10:00.000Z",
+    "updatedAt": "2026-03-10T12:10:00.000Z"
+  },
+  "message": "Journal entry created"
+}
+```
+</details>
 
 ---
 
@@ -651,6 +775,20 @@ See [SECURITY.md](SECURITY.md) for the full security policy and incident respons
 
 ---
 
+## Contributing
+
+Contributions are welcome!
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'feat: add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+Please follow existing project coding standards and ensure all tests pass before submitting.
+
+---
+
 ## License
 
-MIT
+This project is licensed under the [MIT License](LICENSE).
