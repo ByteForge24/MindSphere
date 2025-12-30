@@ -18,7 +18,6 @@
 
 - [Overview](#overview)
 - [Live Demo](#live-demo)
-- [Demo](#demo)
 - [Screenshots](#screenshots)
 - [Feature Highlights](#feature-highlights)
 - [Features](#features)
@@ -61,14 +60,6 @@ MindSphere is a **production-grade mental wellness platform** that combines mood
 | **Backend API** | [https://mindsphere-backend-9c0u.onrender.com](https://mindsphere-backend-9c0u.onrender.com/health) |
 
 > The backend runs on Render's free tier. A GitHub Actions cron job pings it every 5 minutes to prevent cold starts.
-
----
-
-## Demo
-
-![MindSphere Demo](docs/demo/mindsphere-demo.gif)
-
-> This demo shows the main user flow: signup → dashboard → daily check-in → AI insights → journaling → community chat.
 
 ---
 
