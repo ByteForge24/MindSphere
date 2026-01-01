@@ -14,6 +14,32 @@
 
 ---
 
+## Architecture
+
+```mermaid
+flowchart TD
+    User["🧑 User Browser"]
+    Frontend["⚛️ Vercel Frontend\nReact 18 / TypeScript / Vite"]
+    Backend["🖥️ Render Backend\nNode.js / Express / Socket.IO"]
+    DB[("🗄️ MongoDB Atlas")]
+    AI["🤖 Google Gemini AI"]
+    OAuth["🔐 Google & GitHub OAuth"]
+    Sentry["📊 Sentry Error Tracking"]
+    Actions["⚙️ GitHub Actions CI/CD"]
+
+    User --> Frontend
+    Frontend --> Backend
+    Frontend --> OAuth
+    Backend --> DB
+    Backend --> AI
+    Backend --> OAuth
+    Backend --> Sentry
+    Frontend --> Sentry
+    Actions --> Backend
+```
+
+---
+
 ## 📋 Table of Contents
 
 - [Overview](#overview)
