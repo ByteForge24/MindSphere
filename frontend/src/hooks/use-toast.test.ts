@@ -34,7 +34,7 @@ describe('useToast', () => {
         title: 'Test',
       });
       
-      result.current.dismiss(toastId);
+      result.current.dismiss(toastId.id);
     });
 
     expect(result.current.dismiss).toBeDefined();

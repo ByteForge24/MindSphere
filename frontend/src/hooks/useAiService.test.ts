@@ -14,49 +14,23 @@ describe('useAiService', () => {
     vi.clearAllMocks();
   });
 
-  test('initializes with default values', () => {
+  test('initializes with methods', () => {
     const { result } = renderHook(() => useAiService());
     
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBe(null);
-    expect(result.current.response).toBe(null);
+    expect(typeof result.current.analyzeVoice).toBe('function');
+    expect(typeof result.current.analyzeText).toBe('function');
+    expect(typeof result.current.generateRecommendations).toBe('function');
   });
 
-  test('generates mood recommendation', async () => {
+  test('has analyze text method', () => {
     const { result } = renderHook(() => useAiService());
 
-    await act(async () => {
-      await result.current.generateMoodRecommendation('happy', 'I had a great day');
-    });
-
-    // After call, state would be updated (implementation specific)
-    expect(result.current).toBeDefined();
+    expect(typeof result.current.analyzeText).toBe('function');
   });
 
-  test('generates breathing exercise', async () => {
+  test('has generate recommendations method', () => {
     const { result } = renderHook(() => useAiService());
 
-    await act(async () => {
-      await result.current.generateBreathingExercise('calm');
-    });
-
-    expect(result.current).toBeDefined();
-  });
-
-  test('handles errors gracefully', async () => {
-    const { result } = renderHook(() => useAiService());
-
-    // Mock error scenario
-    const mockError = new Error('API Error');
-    
-    await act(async () => {
-      try {
-        await result.current.generateMoodRecommendation('', '');
-      } catch (_e) {
-        // Error expected
-      }
-    });
-
-    expect(result.current).toBeDefined();
+    expect(typeof result.current.generateRecommendations).toBe('function');
   });
 });

@@ -13,8 +13,8 @@ describe('env', () => {
   });
 
   test('API URL validation if defined', () => {
-    if (env.VITE_API_URL) {
-      expect(env.VITE_API_URL).toMatch(/^(http|https):\/\//);
+    if (env.API_URL) {
+      expect(env.API_URL).toMatch(/^(http|https):\/\//);
     }
   });
 });
